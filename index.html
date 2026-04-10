@@ -12,8 +12,9 @@
       align-items: center;
       background: #0f172a;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
+      overflow: hidden;
     }
 
     .container {
@@ -21,17 +22,18 @@
     }
 
     h1 {
-      font-size: 40px;
+      font-size: 45px;
       margin-bottom: 10px;
     }
 
     .name {
-      color: red;
+      color: #ff3b3b;
       font-weight: bold;
+      animation: glow 1.5s infinite alternate;
     }
 
     p {
-      font-size: 20px;
+      font-size: 22px;
       margin: 10px 0;
     }
 
@@ -40,18 +42,89 @@
       margin-top: 20px;
     }
 
+    /* Loader (Centered) */
+    .loader {
+      margin: 30px auto 0;
+      width: 220px;
+      height: 8px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .loader::before {
+      content: '';
+      position: absolute;
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #6366f1);
+      animation: loading 1.5s infinite;
+      border-radius: 10px;
+    }
+
+    /* Floating background circles */
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      animation: float 10s infinite linear;
+    }
+
+    .circle:nth-child(1) {
+      width: 100px; height: 100px;
+      top: 10%; left: 20%;
+    }
+
+    .circle:nth-child(2) {
+      width: 150px; height: 150px;
+      bottom: 15%; right: 15%;
+      animation-duration: 15s;
+    }
+
+    .circle:nth-child(3) {
+      width: 80px; height: 80px;
+      top: 50%; left: 70%;
+      animation-duration: 12s;
+    }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #ff3b3b; }
+      to { text-shadow: 0 0 20px #ff3b3b; }
+    }
+
+    @keyframes loading {
+      0% { left: -40%; }
+      100% { left: 100%; }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-30px); }
+      100% { transform: translateY(0px); }
     }
   </style>
 </head>
 
 <body>
+
+  <!-- Background animation -->
+  <div class="circle"></div>
+  <div class="circle"></div>
+  <div class="circle"></div>
+
   <div class="container">
     <h1><span class="name">Yash Bellare</span></h1>
     <p>Cooking something!! 👨‍🍳🔥</p>
     <p class="emoji">🚧 Site Under Update 🚧</p>
+
+    <div class="loader"></div>
   </div>
+
 </body>
 </html>
