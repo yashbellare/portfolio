@@ -1,130 +1,464 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Under Update</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yash Bellare — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #0f172a;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #080c14;
+      --red: #dc2626;
+      --red-dim: rgba(220,38,38,0.08);
+      --blue: #3b82f6;
+      --gold: #facc15;
+      --white: #ffffff;
+      --muted: rgba(255,255,255,0.4);
+      --border: rgba(255,255,255,0.08);
+      --font-display: 'Space Mono', monospace;
+      --font-body: 'Space Grotesk', sans-serif;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      font-family: var(--font-body);
       overflow: hidden;
+      cursor: none;
     }
 
-    .container {
-      animation: fadeIn 1.5s ease-in-out;
-    }
-
-    h1 {
-      font-size: 45px;
-      margin-bottom: 10px;
-    }
-
-    .name {
-      color: #ff3b3b;
-      font-weight: bold;
-      animation: glow 1.5s infinite alternate;
-    }
-
-    p {
-      font-size: 22px;
-      margin: 10px 0;
-    }
-
-    .emoji {
-      font-size: 40px;
-      margin-top: 20px;
-    }
-
-    /* Loader (Centered) */
-    .loader {
-      margin: 30px auto 0;
-      width: 220px;
-      height: 8px;
-      background: #1e293b;
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .loader::before {
-      content: '';
-      position: absolute;
-      width: 40%;
-      height: 100%;
-      background: linear-gradient(90deg, #38bdf8, #6366f1);
-      animation: loading 1.5s infinite;
-      border-radius: 10px;
-    }
-
-    /* Floating background circles */
-    .circle {
-      position: absolute;
+    /* ─── Custom Cursor ─────────────────────────────── */
+    #cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--red);
       border-radius: 50%;
-      background: rgba(255,255,255,0.05);
-      animation: float 10s infinite linear;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.12s ease, background 0.2s;
+      mix-blend-mode: screen;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 34px; height: 34px;
+      border: 1px solid rgba(220,38,38,0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: left 0.12s ease, top 0.12s ease, width 0.3s, height 0.3s, border-color 0.3s;
     }
 
-    .circle:nth-child(1) {
-      width: 100px; height: 100px;
-      top: 10%; left: 20%;
+    /* ─── Canvas Grid ───────────────────────────────── */
+    #grid-canvas {
+      position: fixed;
+      inset: 0; width: 100%; height: 100%;
+      z-index: 0;
     }
 
-    .circle:nth-child(2) {
-      width: 150px; height: 150px;
-      bottom: 15%; right: 15%;
-      animation-duration: 15s;
+    /* ─── Floating Orbs ─────────────────────────────── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .orb-1 { width: 500px; height: 500px; background: rgba(220,38,38,0.09); top: -120px; right: -100px; animation: drift1 10s ease-in-out infinite; }
+    .orb-2 { width: 300px; height: 300px; background: rgba(59,130,246,0.07); bottom: -60px; left: -80px; animation: drift2 12s ease-in-out infinite; }
+    .orb-3 { width: 200px; height: 200px; background: rgba(220,38,38,0.05); bottom: 100px; right: 120px; animation: drift1 8s 2s ease-in-out infinite; }
+
+    @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-20px,20px) scale(1.08);} }
+    @keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(20px,-15px) scale(1.05);} }
+
+    /* ─── Main Stage ─────────────────────────────────── */
+    #stage {
+      position: relative; z-index: 10;
+      width: 100%; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
     }
 
-    .circle:nth-child(3) {
-      width: 80px; height: 80px;
-      top: 50%; left: 70%;
-      animation-duration: 12s;
+    /* ─── Center Card ────────────────────────────────── */
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0;
+      padding: 56px 48px;
+      /* Glassmorphism card */
+      background: rgba(255,255,255,0.025);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      max-width: 520px;
+      width: 90%;
+      /* Entrance animation */
+      opacity: 0;
+      transform: translateY(30px);
+      animation: cardEnter 1s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
+    @keyframes cardEnter {
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes glow {
-      from { text-shadow: 0 0 5px #ff3b3b; }
-      to { text-shadow: 0 0 20px #ff3b3b; }
+    /* ─── Live Badge ─────────────────────────────────── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 14px;
+      margin-bottom: 32px;
+      background: rgba(255,255,255,0.03);
+      opacity: 0;
+      animation: fadeUp 0.7s 0.8s ease forwards;
+    }
+    .badge-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: blink 1.5s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+    .badge-txt {
+      font-size: 10px; letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: var(--font-display);
+      font-weight: 400;
     }
 
-    @keyframes loading {
-      0% { left: -40%; }
-      100% { left: 100%; }
+    /* ─── Name ───────────────────────────────────────── */
+    .name {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 54px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp 0.8s 1s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    .name-line {
+      display: block;
+      height: 3px;
+      width: 0;
+      background: var(--red);
+      border-radius: 2px;
+      margin: 10px auto 0;
+      animation: expandLine 1s 1.6s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes expandLine { to { width: 100%; } }
+
+    /* ─── Subline ────────────────────────────────────── */
+    .subline {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      display: flex; align-items: center; gap: 10px;
+      opacity: 0;
+      animation: fadeUp 0.7s 1.2s ease forwards;
     }
 
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-30px); }
-      100% { transform: translateY(0px); }
+    /* ─── Divider ────────────────────────────────────── */
+    .divider {
+      width: 1px; height: 28px;
+      background: var(--border);
+      margin: 24px auto;
+      opacity: 0;
+      animation: fadeUp 0.6s 1.4s ease forwards;
+    }
+
+    /* ─── Status Box ─────────────────────────────────── */
+    .status-box {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 24px;
+      border: 1px solid rgba(250,204,21,0.2);
+      border-radius: 14px;
+      background: rgba(250,204,21,0.04);
+      opacity: 0;
+      animation: fadeUp 0.7s 1.5s ease forwards;
+    }
+    .cone-icon { font-size: 18px; line-height: 1; }
+    .status-txt {
+      font-size: 15px; font-weight: 600;
+      color: rgba(255,255,255,0.82);
+      letter-spacing: 0.3px;
+    }
+
+    /* ─── Progress ───────────────────────────────────── */
+    .progress-wrap {
+      margin-top: 26px;
+      width: 100%;
+      display: flex; flex-direction: column; gap: 8px;
+      opacity: 0;
+      animation: fadeUp 0.7s 1.7s ease forwards;
+    }
+    .prog-labels {
+      display: flex; justify-content: space-between;
+      font-size: 10px;
+      color: rgba(255,255,255,0.28);
+      font-family: var(--font-display);
+      letter-spacing: 1px;
+    }
+    .prog-track {
+      height: 3px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .prog-fill {
+      height: 100%; width: 0;
+      background: var(--blue);
+      border-radius: 100px;
+      transition: width 2.4s 2s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    /* ─── Dots ───────────────────────────────────────── */
+    .dots-row {
+      display: flex; gap: 6px;
+      margin-top: 28px;
+      opacity: 0;
+      animation: fadeUp 0.7s 1.9s ease forwards;
+    }
+    .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      transition: background 0.4s;
+    }
+    .dot.on { background: var(--red); }
+
+    /* ─── Footer note ────────────────────────────────── */
+    .footer-note {
+      margin-top: 28px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 1px;
+      font-family: var(--font-display);
+      opacity: 0;
+      animation: fadeUp 0.7s 2.1s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(10px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ─── Corner Accent ──────────────────────────────── */
+    .corner {
+      position: fixed;
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.15);
+      z-index: 20;
+    }
+    .corner-tl { top: 24px; left: 24px; }
+    .corner-tr { top: 24px; right: 24px; text-align: right; }
+    .corner-bl { bottom: 24px; left: 24px; }
+    .corner-br { bottom: 24px; right: 24px; text-align: right; }
+
+    /* ─── Scanline ───────────────────────────────────── */
+    #scanline {
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.04) 3px,
+        rgba(0,0,0,0.04) 4px
+      );
+      pointer-events: none;
+      z-index: 5;
     }
   </style>
 </head>
-
 <body>
 
-  <!-- Background animation -->
-  <div class="circle"></div>
-  <div class="circle"></div>
-  <div class="circle"></div>
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
 
-  <div class="container">
-    <h1><span class="name">Yash Bellare</span></h1>
-    <p>Cooking something!! 👨‍🍳🔥</p>
-    <p class="emoji">🚧 Site Under Update 🚧</p>
+  <canvas id="grid-canvas"></canvas>
+  <div id="scanline"></div>
 
-    <div class="loader"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Corner labels -->
+  <div class="corner corner-tl">YB · 2025</div>
+  <div class="corner corner-tr">Portfolio<br>v2.0</div>
+  <div class="corner corner-bl">Bengaluru · IN</div>
+  <div class="corner corner-br" id="clock">--:--:--</div>
+
+  <div id="stage">
+    <div class="card">
+
+      <div class="badge">
+        <div class="badge-dot"></div>
+        <span class="badge-txt">Portfolio &nbsp;·&nbsp; 2025</span>
+      </div>
+
+      <div class="name">
+        Yash Bellare
+        <span class="name-line"></span>
+      </div>
+
+      <div class="subline">
+        <span style="font-size:17px;">👨‍🍳</span>
+        <span>Cooking something</span>
+        <span style="font-size:17px;">🔥</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="status-box">
+        <span class="cone-icon">🚧</span>
+        <span class="status-txt">Site Under Update</span>
+        <span class="cone-icon">🚧</span>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="prog-labels">
+          <span>Build progress</span>
+          <span id="pct-lbl">0%</span>
+        </div>
+        <div class="prog-track">
+          <div class="prog-fill" id="prog-fill"></div>
+        </div>
+      </div>
+
+      <div class="dots-row" id="dots">
+        <div class="dot on"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+
+      <div class="footer-note">© 2025 Yash Bellare &nbsp;·&nbsp; Back soon</div>
+    </div>
   </div>
 
+  <script>
+    /* ── Custom cursor ── */
+    const cur = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = window.innerWidth/2, my = window.innerHeight/2;
+    let rx = mx, ry = my;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.style.left = mx + 'px';
+      cur.style.top  = my + 'px';
+    });
+
+    function lerpRing(){
+      rx += (mx - rx) * 0.14;
+      ry += (my - ry) * 0.14;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(lerpRing);
+    }
+    lerpRing();
+
+    /* ── Animated grid canvas ── */
+    const canvas = document.getElementById('grid-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    function resize(){
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const STEP = 46;
+    let offset = 0;
+
+    function drawGrid(){
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = 'rgba(255,255,255,0.038)';
+      ctx.lineWidth = 0.5;
+      const ox = offset % STEP;
+      for(let x = -STEP + ox; x < W + STEP; x += STEP){
+        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+      }
+      for(let y = -STEP + ox; y < H + STEP; y += STEP){
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+      }
+      /* subtle dot at intersections */
+      ctx.fillStyle = 'rgba(255,255,255,0.055)';
+      for(let x = -STEP + ox; x < W + STEP; x += STEP){
+        for(let y = -STEP + ox; y < H + STEP; y += STEP){
+          ctx.beginPath(); ctx.arc(x, y, 1, 0, Math.PI*2); ctx.fill();
+        }
+      }
+    }
+
+    let lastT = null;
+    function tick(t){
+      if(!lastT) lastT = t;
+      offset += (t - lastT) * 0.012;
+      lastT = t;
+      drawGrid();
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    /* ── Progress bar ── */
+    const fill = document.getElementById('prog-fill');
+    const pctLbl = document.getElementById('pct-lbl');
+    const TARGET = 62;
+    let p = 0;
+    setTimeout(()=>{
+      fill.style.width = TARGET + '%';
+      const iv = setInterval(()=>{
+        p = Math.min(p + 1, TARGET);
+        pctLbl.textContent = p + '%';
+        if(p >= TARGET) clearInterval(iv);
+      }, 32);
+    }, 2000);
+
+    /* ── Dot cycle ── */
+    const dots = document.querySelectorAll('.dot');
+    let di = 0;
+    setInterval(()=>{
+      dots.forEach(d => d.classList.remove('on'));
+      di = (di + 1) % dots.length;
+      dots[di].classList.add('on');
+    }, 850);
+
+    /* ── Live clock ── */
+    function updateClock(){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,'0');
+      const mm = String(now.getMinutes()).padStart(2,'0');
+      const ss = String(now.getSeconds()).padStart(2,'0');
+      document.getElementById('clock').textContent = hh + ':' + mm + ':' + ss;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    /* ── Cursor hover expand ── */
+    document.querySelectorAll('.status-box, .badge, .card').forEach(el => {
+      el.addEventListener('mouseenter', ()=> {
+        ring.style.width = '54px'; ring.style.height = '54px';
+        ring.style.borderColor = 'rgba(220,38,38,0.7)';
+      });
+      el.addEventListener('mouseleave', ()=> {
+        ring.style.width = '34px'; ring.style.height = '34px';
+        ring.style.borderColor = 'rgba(220,38,38,0.4)';
+      });
+    });
+  </script>
 </body>
 </html>
