@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Yash Bellare — Portfolio</title>
+<title>Yash Bellare — Digital Marketing Portfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -140,6 +140,54 @@
     color: rgba(255,255,255,0.04); line-height: 1;
   }
 
+  /* EXPERIENCE */
+  .experience { background: #f0ece5; }
+  .experience-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .experience-card {
+    background: #f0ece5;
+    padding: 2rem 1.5rem 2.25rem;
+    min-height: 260px;
+    position: relative;
+  }
+  .experience-card::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 3px;
+    background: var(--red);
+    margin-bottom: 2rem;
+  }
+  .experience-type {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  .experience-card h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    line-height: 1.05;
+    margin-bottom: 0.4rem;
+  }
+  .experience-client {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .experience-card p {
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+
   /* CONCERTS */
   .concerts { background: #f0ece5; }
   .concert-list { border: 1px solid var(--line); }
@@ -202,6 +250,12 @@
     .about-grid { grid-template-columns: 1fr; gap: 2rem; }
     .scroll-hint { display: none; }
     .concert-item { grid-template-columns: 2.5rem 1fr auto; gap: 1rem; }
+    .experience-grid { grid-template-columns: 1fr; }
+    .experience-card { min-height: auto; }
+  }
+
+  @media (min-width: 601px) and (max-width: 900px) {
+    .experience-grid { grid-template-columns: 1fr 1fr; }
   }
 
   .card-icon {
@@ -233,15 +287,15 @@
   <div class="hero-grid"></div>
   <div class="scroll-hint">Scroll</div>
   <div class="hero-content">
-    <p class="hero-eyebrow">Content Creator · Filmmaker · Social Media</p>
+    <p class="hero-eyebrow">Digital Marketing · Content · Social Media</p>
     <h1 class="hero-name">YASH<br><span>BELLARE</span></h1>
-    <p class="hero-tagline">Visual storyteller from Mangaluru, crafting content that moves people.</p>
+    <p class="hero-tagline">I build digital presence for brands through strategy, content, and stories that move people.</p>
     <div class="hero-pills">
-      <span class="pill">Video Editing</span>
-      <span class="pill">Photography</span>
+      <span class="pill">Digital Strategy</span>
       <span class="pill">Social Media</span>
-      <span class="pill">Filmmaking</span>
-      <span class="pill">Brand Content</span>
+      <span class="pill">Content Creation</span>
+      <span class="pill">Reels & Video</span>
+      <span class="pill">Brand Promotion</span>
     </div>
   </div>
 </section>
@@ -251,28 +305,53 @@
   <p class="section-label">About</p>
   <div class="about-grid">
     <div class="about-text">
-      <h2>Frames,<br>Stories,<br>Impact.</h2>
-      <p>A passionate visual content creator and social media strategist from Mangaluru, Karnataka, with 4+ years of hands-on experience in building brands through storytelling, design, and digital media.</p>
-      <p>I aim to craft content that creates genuine connections between brands and their audiences — blending creative vision with strategic thinking to drive real growth in the digital space.</p>
+      <h2>Strategy,<br>Stories,<br>Growth.</h2>
+      <p>A digital marketing and content professional from Mangaluru, Karnataka, helping brands build attention and trust through social media, visual storytelling, and campaign-ready content.</p>
+      <p>From planning content to producing the final reel, I blend creative thinking with an audience-first approach to make every post, promotion, and brand story work harder online.</p>
     </div>
     <div class="about-stats">
       <div class="stat">
         <div class="stat-num">10+</div>
-        <div class="stat-label">Clients Served</div>
+        <div class="stat-label">Projects Delivered</div>
       </div>
       <div class="stat">
         <div class="stat-num">5+</div>
-        <div class="stat-label">Active IG Pages</div>
+        <div class="stat-label">Pages Supported</div>
       </div>
       <div class="stat">
         <div class="stat-num">4+</div>
-        <div class="stat-label">Years Experience</div>
+        <div class="stat-label">Years Creating</div>
       </div>
       <div class="stat">
         <div class="stat-num">10+</div>
-        <div class="stat-label">Concerts Covered</div>
+        <div class="stat-label">Brands & Communities</div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience">
+  <p class="section-label">Experience</p>
+  <div class="experience-grid">
+    <article class="experience-card">
+      <div class="experience-type">Digital Media</div>
+      <h3>Msanjeevashetty</h3>
+      <div class="experience-client">Clothing Brand Showroom · Puttur</div>
+      <p>Created digital media content to present the showroom, strengthen the brand's online presence, and connect its clothing collections with local audiences.</p>
+    </article>
+    <article class="experience-card">
+      <div class="experience-type">Social Media Content</div>
+      <h3>Jnan Ganga Central School</h3>
+      <div class="experience-client">Bellare</div>
+      <p>Produced social media content designed to showcase the school's activities, community, and everyday moments in a clear and engaging format.</p>
+    </article>
+    <article class="experience-card">
+      <div class="experience-type">Promotional Reel</div>
+      <h3>Hit Media Production</h3>
+      <div class="experience-client">Promotional Content</div>
+      <p>Developed a promotional reel with a strong visual hook and concise storytelling to help communicate a brand message through short-form video.</p>
+    </article>
   </div>
 </section>
 
@@ -376,7 +455,7 @@
 
 <!-- CONCERTS -->
 <section class="concerts">
-  <p class="section-label">Live Event Coverage</p>
+  <p class="section-label">Additional Experience · Live Event Coverage</p>
   <div class="concert-list">
     <div class="concert-item">
       <div class="concert-idx">01</div>
@@ -500,7 +579,9 @@
       <span class="skill-tag">Photoshop</span>
     </div>
     <div class="skill-group">
-      <h4><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Social Media</h4>
+      <h4><svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Digital Marketing</h4>
+      <span class="skill-tag">Content Planning</span>
+      <span class="skill-tag">Campaign Ideas</span>
       <span class="skill-tag">Instagram</span>
       <span class="skill-tag">YouTube</span>
       <span class="skill-tag">LinkedIn</span>
